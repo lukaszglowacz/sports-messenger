@@ -1,0 +1,46 @@
+version: '3.8'
+
+services:
+  # Backend service - FastAPI application
+  backend:
+    build: 
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: sports-messenger-backend
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_URL=sqlite:///./messenger.db
+      - CORS_ORIGINS=http://localhost:3000
+    volumes:
+      - ./backend:/app
+      - backend-db:/app/data
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+    networks:
+      - sports-messenger-network
+
+  # Frontend service - React + TypeScript application
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: sports-messenger-frontend
+    ports:
+      - "3000:3000"
+    environment:
+      - VITE_API_URL=http://localhost:8000
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    command: npm run dev -- --host
+    depends_on:
+      - backend
+    networks:
+      - sports-messenger-network
+
+networks:
+  sports-messenger-network:
+    driver: bridge
+
+volumes:
+  backend-db:
