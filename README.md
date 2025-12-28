@@ -110,7 +110,7 @@ Docker Compose          # Multi-container orchestration
 
 ```bash
 # 1. Sklonuj repozytorium
-git clone <repository-url>
+git clone https://github.com/lukaszglowacz/sports-messenger.git
 cd sports-messenger
 
 # 2. Uruchom aplikację
